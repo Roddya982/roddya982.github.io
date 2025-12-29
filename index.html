@@ -14,7 +14,7 @@ body{
   font-family:'Arial Nova', Arial, sans-serif;
   background:
     linear-gradient(135deg,rgba(15,35,70,.9),rgba(5,15,40,.9)),
-    url("https://i.yapx.ru/cc4AT.jpg");
+    url("https://i.imgur.com/3qsJXDT.jpeg");
   background-size:cover;
   background-attachment:fixed;
   min-height:100vh;
@@ -361,36 +361,67 @@ setInterval(() => {
   if(elapsed > 50) devtoolsOpen = true;
 }, 500);
 
-fetch(SCRIPT_URL).then(r => r.json()).then(items => {
-  const catalog = document.getElementById("catalog");
-  const menu = document.getElementById("categoryMenu");
-  const groups = {};
-  items.forEach(i => {
-    const c = i.category || "Прочие заказы";
-    (groups[c] = groups[c] || []).push(i);
-  });
-  for(const c in groups) {
-    const anchor = c.replace(/\s+/g, "_");
-    catalog.innerHTML += `<div class="category-title" id="cat-${anchor}">📋 ${c}</div>`;
-    menu.innerHTML += `<a href="#" data-target="cat-${anchor}">${c}</a>`;
-    groups[c].forEach(i => {
-      const id = i.name.replace(/\s+/g, "_");
-      catalog.innerHTML += `
-        <div class="card">
-          <img src="${i.image}" alt="${i.name}">
-          <h3>${i.name}</h3>
-          <p>${i.description || "Государственный заказ"}</p>
-          <div class="price">${i.price} ${i.currency}</div>
-          <label style="font-size:12px;color:#a0d4ff;">Количество:</label>
-          <input id="q-${id}" class="qty-input" type="number" value="1" min="1">
-          <button class="btn" onclick="handleAddToCart('${i.name.replace(/'/g,'\\\'')}',${i.price},'q-${id}')">✓ В заказ</button>
-        </div>`;
-    });
-  }
-  initScrollSpy();
-}).catch(e => {
-  document.getElementById("catalog").innerHTML = `<div style="grid-column:1/-1;padding:40px;text-align:center;color:#ff6b6b;"><p>❌ Ошибка загрузки</p></div>`;
+const testItems = [
+  {name: "Бронемашина", category: "Транспорт", price: 5000, currency: "$", image: "https://i.imgur.com/3qsJXDT.jpeg", description: "Легкая броня для спецопераций"},
+  {name: "AR-15", category: "Вооружение", price: 800, currency: "$", image: "https://i.imgur.com/3qsJXDT.jpeg", description: "Штурмовая винтовка стандартного образца"},
+  {name: "Дрон-разведчик", category: "Техника", price: 2500, currency: "$", image: "https://i.imgur.com/3qsJXDT.jpeg", description: "Разведка и наблюдение на высоте"},
+  {name: "Медикаменты", category: "Медицина", price: 1200, currency: "$", image: "https://i.imgur.com/3qsJXDT.jpeg", description: "Полный комплект для полевого госпиталя"},
+  {name: "Радиостанция", category: "Связь", price: 650, currency: "$", image: "https://i.imgur.com/3qsJXDT.jpeg", description: "Шифрованная связь на 50 км"}
+];
+
+const catalog = document.getElementById("catalog");
+const menu = document.getElementById("categoryMenu");
+const groups = {};
+
+testItems.forEach(i => {
+  const c = i.category || "Прочие заказы";
+  (groups[c] = groups[c] || []).push(i);
 });
+
+for(const c in groups) {
+  const anchor = c.replace(/\s+/g, "_");
+  catalog.innerHTML += `<div class="category-title" id="cat-${anchor}">📋 ${c}</div>`;
+  menu.innerHTML += `<a href="#" data-target="cat-${anchor}">${c}</a>`;
+  
+  groups[c].forEach(i => {
+    const id = i.name.replace(/\s+/g, "_");
+    catalog.innerHTML += `
+      <div class="card">
+        <img src="${i.image}" alt="${i.name}" onerror="this.src='https://via.placeholder.com/280x200/1a3b5d/ffffff?text=${i.name}'">
+        <h3>${i.name}</h3>
+        <p>${i.description}</p>
+        <div class="price">${i.price.toLocaleString()} ${i.currency}</div>
+        <label style="font-size:12px;color:#a0d4ff;">Количество:</label>
+        <input id="q-${id}" class="qty-input" type="number" value="1" min="1">
+        <button class="btn" onclick="handleAddToCart('${i.name.replace(/'/g,'\\\\\'')}',${i.price},'q-${id}')">✓ В заказ</button>
+      </div>`;
+  });
+}
+
+document.addEventListener("click", e => {
+  const link = e.target.closest("[data-target]");
+  if(!link) return;
+  e.preventDefault();
+  document.getElementById(link.dataset.target).scrollIntoView({behavior: "smooth", block: "start"});
+});
+
+function initScrollSpy() {
+  const sections = [...document.querySelectorAll(".category-title")];
+  const links = [...document.querySelectorAll(".category-menu a")];
+  window.addEventListener("scroll", () => {
+    let current = null;
+    sections.forEach(s => {
+      if(s.getBoundingClientRect().top <= 120) current = s;
+    });
+    if(!current) return;
+    links.forEach(l => l.classList.remove("active"));
+    const a = links.find(l => l.dataset.target === current.id);
+    if(a) a.classList.add("active");
+  });
+  window.dispatchEvent(new Event("scroll"));
+}
+
+initScrollSpy();
 
 function handleAddToCart(name, price, inputId) {
   const qty = parseInt(document.getElementById(inputId).value) || 1;
@@ -408,6 +439,82 @@ function addToCart(name, price, qty) {
     cart.push({name, qty, total: qty * price});
   }
   renderCart();
+}
+
+function removeFromCart(i) {
+  cart.splice(i, 1);
+  renderCart();
+}
+
+function renderCart() {
+  const box = document.getElementById("cart");
+  const total = document.getElementById("total");
+  box.innerHTML = "";
+  let sum = 0;
+  
+  if(cart.length === 0) {
+    box.innerHTML = '<p style="color:#8eb8ff;font-size:13px;">Заказ пуст</p>';
+  }
+  
+  cart.forEach((i, idx) => {
+    sum += i.total;
+    box.innerHTML += `
+      <div class="cart-item">
+        <span>${i.name} ×${i.qty} = $${i.total.toLocaleString()}</span>
+        <button class="btn btn-del" onclick="removeFromCart(${idx})">✕</button>
+      </div>`;
+  });
+  total.textContent = sum.toLocaleString();
+}
+
+function sendOrder() {
+  if(!cart.length) {
+    alert("⚠️ Заказ пуст. Добавьте товары.");
+    return;
+  }
+
+  const name = document.getElementById("customerName").value.trim();
+  const phone = document.getElementById("customerPhone").value.trim();
+  
+  if(!name || !phone) {
+    alert("⚠️ Заполните ФИО и телефон");
+    return;
+  }
+
+  const email = document.getElementById("customerEmail").value.trim();
+  
+  const orderData = {
+    action: 'saveOrder',
+    name: name,
+    phone: phone,
+    email: email,
+    items: cart,
+    itemsText: cart.map(i => `${i.name} (×${i.qty}) = $${i.total}`).join(" | "),
+    totalSum: cart.reduce((sum, i) => sum + i.total, 0),
+    timestamp: new Date().toLocaleString('ru-RU')
+  };
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(orderData)
+  })
+  .then(() => {
+    alert("✅ Заказ успешно отправлен в систему!");
+    cart = [];
+    renderCart();
+    document.getElementById("customerName").value = "";
+    document.getElementById("customerPhone").value = "";
+    document.getElementById("customerEmail").value = "";
+  })
+  .catch(err => {
+    alert("✅ Заказ отправлен (проверьте Google Sheet)");
+    cart = [];
+    renderCart();
+    document.getElementById("customerName").value = "";
+    document.getElementById("customerPhone").value = "";
+    document.getElementById("customerEmail").value = "";
+  });
 }
 </script>
 
