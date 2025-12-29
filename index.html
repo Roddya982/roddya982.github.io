@@ -14,7 +14,7 @@ body{
   font-family:'Arial Nova', Arial, sans-serif;
   background:
     linear-gradient(135deg,rgba(15,35,70,.9),rgba(5,15,40,.9)),
-    url("https://i.yapx.ru/cc4AT.jpg");
+    url("https://i.imgur.com/3qsJXDT.jpeg");
   background-size:cover;
   background-attachment:fixed;
   min-height:100vh;
@@ -380,15 +380,16 @@ fetch(SCRIPT_URL)
 
     groups[c].forEach(i => {
       const id = i.name.replace(/\s+/g, "_");
+      const price = parseFloat(i.price) || 0;
       catalog.innerHTML += `
         <div class="card">
           <img src="${i.image}" alt="${i.name}">
           <h3>${i.name}</h3>
           <p>${i.description || "Государственный заказ"}</p>
-          <div class="price">${i.price} ${i.currency}</div>
+          <div class="price">${price} ${i.currency}</div>
           <label style="font-size:12px;color:#a0d4ff;">Количество:</label>
           <input id="q-${id}" class="qty-input" type="number" value="1" min="1">
-          <button class="btn" onclick="handleAddToCart('${i.name.replace(/'/g,"\\'")}',${i.price},'q-${id}')">
+          <button class="btn" onclick="handleAddToCart('${i.name.replace(/'/g,"\\'")}',${price},'q-${id}')">
             ✓ В заказ
           </button>
         </div>`;
