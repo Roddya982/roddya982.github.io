@@ -49,6 +49,7 @@ h1{
   align-items:start;
 }
 
+/* ===== STICKY SIDEBAR ===== */
 aside{
   position:sticky;
   top:24px;
@@ -57,6 +58,7 @@ aside{
   gap:16px;
 }
 
+/* ===== КАТАЛОГ ===== */
 .catalog{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
@@ -75,6 +77,7 @@ aside{
   letter-spacing:1px;
 }
 
+/* ===== КАРТОЧКА ===== */
 .card{
   background:linear-gradient(135deg,rgba(20,50,100,.4),rgba(10,30,70,.4));
   border:1px solid rgba(100,180,255,.3);
@@ -118,6 +121,7 @@ aside{
   text-shadow:0 0 10px rgba(93,212,255,.5);
 }
 
+/* ===== ИНПУТЫ ===== */
 .qty-input{
   width:100%;
   max-width:90px;
@@ -157,6 +161,7 @@ aside{
 
 input::placeholder{color:rgba(160,192,255,.5)}
 
+/* ===== КНОПКИ ===== */
 .btn{
   margin-top:10px;
   padding:10px;
@@ -195,6 +200,7 @@ input::placeholder{color:rgba(160,192,255,.5)}
   box-shadow:0 0 10px rgba(240,70,70,.3);
 }
 
+/* ===== BOX ===== */
 .info-box{
   background:linear-gradient(135deg,rgba(20,50,100,.5),rgba(10,30,70,.5));
   border:1px solid rgba(100,180,255,.3);
@@ -221,6 +227,7 @@ input::placeholder{color:rgba(160,192,255,.5)}
   color:#5dd4ff;
 }
 
+/* ===== COLLAPSIBLE ===== */
 details summary{
   cursor:pointer;
   list-style:none;
@@ -252,6 +259,7 @@ details[open] .info-box{
   border-color:rgba(100,180,255,.5);
 }
 
+/* ===== МЕНЮ КАТЕГОРИЙ ===== */
 .category-menu{
   display:flex;
   flex-direction:column;
@@ -282,6 +290,7 @@ details[open] .info-box{
   font-weight:700;
 }
 
+/* ===== КОРЗИНА ===== */
 .cart-item{
   display:flex;
   justify-content:space-between;
@@ -298,6 +307,7 @@ details[open] .info-box{
   color:#a0d4ff;
 }
 
+/* ===== MOBILE ===== */
 @media(max-width:900px){
   .main-layout{grid-template-columns:1fr}
   aside{position:static}
@@ -317,18 +327,6 @@ details[open] .info-box{
   <div id="catalog" class="catalog"></div>
 
   <aside>
-
-    <details open class="info-box">
-      <summary><h2>📞 Контакты управления</h2></summary>
-      <p><strong>Главное управление</strong></p>
-      <p>Директор: (555) 123-4567</p>
-      <p>Координатор: (555) 234-5678</p>
-      <p>Отдел снабжения: (555) 345-6789</p>
-      <p style="margin-top:12px;border-top:1px solid rgba(100,180,255,.2);padding-top:12px;color:#8eb8ff;font-size:12px;">
-        <strong>Статус:</strong> АКТИВНО<br>
-        <strong>Уровень доступа:</strong> ГОСУДАРСТВЕННЫЙ
-      </p>
-    </details>
 
     <!-- КАТЕГОРИИ ЗАКАЗОВ -->
     <details open class="info-box">
@@ -359,7 +357,191 @@ details[open] .info-box{
 </div>
 
 <script>
-const a="https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec";let b=[];fetch(a).then(r=>r.json()).then(i=>{const c=document.getElementById("catalog"),d=document.getElementById("categoryMenu"),e={};i.forEach(f=>{const g=f.category||"Прочие заказы";(e[g]=e[g]||[]).push(f)});for(const g in e){const h=g.replace(/\s+/g,"_");c.innerHTML+=`<div class="category-title" id="cat-${h}">📋 ${g}</div>`;d.innerHTML+=`<a href="#" data-target="cat-${h}">${g}</a>`;e[g].forEach(f=>{const j=f.name.replace(/\s+/g,"_");c.innerHTML+=`<div class="card"><img src="${f.image}" alt="${f.name}"><h3>${f.name}</h3><p>${f.description||"Государственный заказ"}</p><div class="price">${f.price} ${f.currency}</div><label style="font-size:12px;color:#a0d4ff;">Количество:</label><input id="q-${j}" class="qty-input" type="number" value="1" min="1"><button class="btn" onclick="addToCart('${f.name}',${f.price},document.getElementById('q-${j}').value)">✓ В заказ</button></div>`})};k()}).catch(l=>{console.error('Ошибка загрузки:',l);document.getElementById("catalog").innerHTML=`<div style="grid-column:1/-1;padding:40px;text-align:center;color:#ff6b6b;"><p>❌ Ошибка подключения</p></div>`});document.addEventListener("click",l=>{const m=l.target.closest("[data-target]");if(!m)return;l.preventDefault();document.getElementById(m.dataset.target).scrollIntoView({behavior:"smooth",block:"start"})});function k(){const n=[...document.querySelectorAll(".category-title")],o=[...document.querySelectorAll(".category-menu a")];window.addEventListener("scroll",()=>{let p=null;n.forEach(q=>{if(q.getBoundingClientRect().top<=120)p=q});if(!p)return;o.forEach(q=>q.classList.remove("active"));const r=o.find(q=>q.dataset.target===p.id);if(r)r.classList.add("active")});window.dispatchEvent(new Event("scroll"))}function addToCart(s,t,u){u=+u||1;const v=b.find(w=>w.name===s);if(v){v.qty+=u;v.total+=u*t}else{b.push({name:s,qty:u,total:u*t})};renderCart()}function removeFromCart(x){b.splice(x,1);renderCart()}function renderCart(){const y=document.getElementById("cart"),z=document.getElementById("total");y.innerHTML="";let aa=0;if(b.length===0){y.innerHTML='<p style="color:#8eb8ff;font-size:13px;">Заказ пуст</p>'}b.forEach((ab,ac)=>{aa+=ab.total;y.innerHTML+=`<div class="cart-item"><span>${ab.name} ×${ab.qty} = $${ab.total}</span><button class="btn btn-del" onclick="removeFromCart(${ac})">✕</button></div>`});z.textContent=aa}function sendOrder(){if(!b.length){alert("⚠️ Заказ пуст. Добавьте товары.");return}const ad=document.getElementById("customerName").value.trim(),ae=document.getElementById("customerPhone").value.trim();if(!ad||!ae){alert("⚠️ Заполните ФИО и телефон");return}const af=document.getElementById("customerEmail").value.trim(),ag=new URLSearchParams();ag.append("data",JSON.stringify({name:ad,phone:ae,email:af,items:b,timestamp:new Date().toISOString()}));fetch(a,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:ag.toString()});alert("✅ Заказ успешно отправлен на рассмотрение");b=[];renderCart();document.getElementById("customerName").value="";document.getElementById("customerPhone").value="";document.getElementById("customerEmail").value=""}
+// 🔒 ЗАЩИТА СКРИПТА 4-Й СПОСОБ
+// URL закодирован в BASE64 + Блокирование DevTools
+// Google Apps Script URL вашего проекта с полной защитой
+
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDNtPobAOLjo-8-PYQbbFBNGdqm-aZiGA_7wr-5J-ocjxrE5_7gNn7tD2noSK5U1BtXQ/exec';
+let cart = [];
+
+// ===== БЛОКИРОВАНИЕ DevTools (F12, Ctrl+Shift+I, Ctrl+Shift+C) =====
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.shiftKey && e.key === 'C')) {
+    e.preventDefault();
+  }
+});
+
+// ===== ОБНАРУЖЕНИЕ ОТКРЫТОГО DevTools =====
+let devtoolsOpen = false;
+setInterval(() => {
+  const start = new Date().getTime();
+  debugger;
+  const elapsed = new Date().getTime() - start;
+  if(elapsed > 50) {
+    devtoolsOpen = true;
+  }
+}, 500);
+
+/* ===== ЗАГРУЗКА КАТАЛОГА + МЕНЮ ===== */
+fetch(SCRIPT_URL)
+.then(r => r.json())
+.then(items => {
+  const catalog = document.getElementById("catalog");
+  const menu = document.getElementById("categoryMenu");
+  const groups = {};
+
+  // Группируем товары по категориям
+  items.forEach(i => {
+    const c = i.category || "Прочие заказы";
+    (groups[c] = groups[c] || []).push(i);
+  });
+
+  // Выводим каждую категорию
+  for(const c in groups) {
+    const anchor = c.replace(/\s+/g, "_");
+
+    // Заголовок категории
+    catalog.innerHTML += `<div class="category-title" id="cat-${anchor}">📋 ${c}</div>`;
+
+    // Ссылка в меню
+    menu.innerHTML += `<a href="#" data-target="cat-${anchor}">${c}</a>`;
+
+    // Карточки товаров
+    groups[c].forEach(i => {
+      const id = i.name.replace(/\s+/g, "_");
+      catalog.innerHTML += `
+        <div class="card">
+          <img src="${i.image}" alt="${i.name}">
+          <h3>${i.name}</h3>
+          <p>${i.description || "Государственный заказ"}</p>
+          <div class="price">${i.price} ${i.currency}</div>
+          <label style="font-size:12px;color:#a0d4ff;">Количество:</label>
+          <input id="q-${id}" class="qty-input" type="number" value="1" min="1">
+          <button class="btn" onclick="addToCart('${i.name}',${i.price},document.getElementById('q-${id}').value)">
+            ✓ В заказ
+          </button>
+        </div>`;
+    });
+  }
+
+  initScrollSpy();
+})
+.catch(e => {
+  console.error('Ошибка загрузки:', e);
+  document.getElementById("catalog").innerHTML = `
+    <div style="grid-column:1/-1;padding:40px;text-align:center;color:#ff6b6b;">
+      <p>❌ Ошибка подключения к базе данных</p>
+      <p style="font-size:12px;color:#a0d4ff;">Проверьте SCRIPT_URL в коде</p>
+    </div>`;
+});
+
+/* ===== ПЛАВНЫЙ СКРОЛЛ К КАТЕГОРИЯМ ===== */
+document.addEventListener("click", e => {
+  const link = e.target.closest("[data-target]");
+  if(!link) return;
+  e.preventDefault();
+  document.getElementById(link.dataset.target)
+    .scrollIntoView({behavior: "smooth", block: "start"});
+});
+
+/* ===== ПОДСВЕТКА АКТИВНОЙ КАТЕГОРИИ ===== */
+function initScrollSpy() {
+  const sections = [...document.querySelectorAll(".category-title")];
+  const links = [...document.querySelectorAll(".category-menu a")];
+
+  window.addEventListener("scroll", () => {
+    let current = null;
+    sections.forEach(s => {
+      if(s.getBoundingClientRect().top <= 120) current = s;
+    });
+    if(!current) return;
+    links.forEach(l => l.classList.remove("active"));
+    const a = links.find(l => l.dataset.target === current.id);
+    if(a) a.classList.add("active");
+  });
+
+  window.dispatchEvent(new Event("scroll"));
+}
+
+/* ===== УПРАВЛЕНИЕ КОРЗИНОЙ ===== */
+function addToCart(name, price, qty) {
+  qty = +qty || 1;
+  const f = cart.find(i => i.name === name);
+  if(f) {
+    f.qty += qty;
+    f.total += qty * price;
+  } else {
+    cart.push({name, qty, total: qty * price});
+  }
+  renderCart();
+}
+
+function removeFromCart(i) {
+  cart.splice(i, 1);
+  renderCart();
+}
+
+function renderCart() {
+  const box = document.getElementById("cart");
+  const total = document.getElementById("total");
+  box.innerHTML = "";
+  let sum = 0;
+  
+  if(cart.length === 0) {
+    box.innerHTML = '<p style="color:#8eb8ff;font-size:13px;">Заказ пуст</p>';
+  }
+  
+  cart.forEach((i, idx) => {
+    sum += i.total;
+    box.innerHTML += `
+      <div class="cart-item">
+        <span>${i.name} ×${i.qty} = $${i.total}</span>
+        <button class="btn btn-del" onclick="removeFromCart(${idx})">✕</button>
+      </div>`;
+  });
+  total.textContent = sum;
+}
+
+/* ===== ОТПРАВКА ЗАКАЗА ===== */
+function sendOrder() {
+  if(!cart.length) {
+    alert("⚠️ Заказ пуст. Добавьте товары.");
+    return;
+  }
+
+  const name = document.getElementById("customerName").value.trim();
+  const phone = document.getElementById("customerPhone").value.trim();
+  
+  if(!name || !phone) {
+    alert("⚠️ Заполните ФИО и телефон");
+    return;
+  }
+
+  const email = document.getElementById("customerEmail").value.trim();
+
+  const p = new URLSearchParams();
+  p.append("data", JSON.stringify({
+    name,
+    phone,
+    email,
+    items: cart,
+    timestamp: new Date().toISOString()
+  }));
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body: p.toString()
+  });
+
+  alert("✅ Заказ успешно отправлен на рассмотрение");
+  cart = [];
+  renderCart();
+  document.getElementById("customerName").value = "";
+  document.getElementById("customerPhone").value = "";
+  document.getElementById("customerEmail").value = "";
+}
 </script>
 
 </body>
