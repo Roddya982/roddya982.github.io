@@ -344,7 +344,7 @@ details[open] .info-box{
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDNtPobAOLjo-8-PYQbbFBNGdqm-aZiGA_7wr-5J-ocjxrE5_7gNn7tD2noSK5U1BtXQ/exec';
+const SCRIPT_URL = atob('aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9Ba0Z5Y2J3RE50UG9iQU9Mam8tOC1QWVFiYkZCTkdkcW0tYVppR0FfN3dyLTVKLW9janhyRTVfN2dObjd0RDJub1NLNVUxQnRYUS9leGVj');
 let cart = [];
 
 document.addEventListener('keydown', (e) => {
@@ -358,30 +358,21 @@ setInterval(() => {
   const start = new Date().getTime();
   debugger;
   const elapsed = new Date().getTime() - start;
-  if(elapsed > 50) {
-    devtoolsOpen = true;
-  }
+  if(elapsed > 50) devtoolsOpen = true;
 }, 500);
 
-fetch(SCRIPT_URL)
-.then(r => r.json())
-.then(items => {
+fetch(SCRIPT_URL).then(r => r.json()).then(items => {
   const catalog = document.getElementById("catalog");
   const menu = document.getElementById("categoryMenu");
   const groups = {};
-
   items.forEach(i => {
     const c = i.category || "Прочие заказы";
     (groups[c] = groups[c] || []).push(i);
   });
-
   for(const c in groups) {
     const anchor = c.replace(/\s+/g, "_");
-
     catalog.innerHTML += `<div class="category-title" id="cat-${anchor}">📋 ${c}</div>`;
-
     menu.innerHTML += `<a href="#" data-target="cat-${anchor}">${c}</a>`;
-
     groups[c].forEach(i => {
       const id = i.name.replace(/\s+/g, "_");
       catalog.innerHTML += `
@@ -392,126 +383,31 @@ fetch(SCRIPT_URL)
           <div class="price">${i.price} ${i.currency}</div>
           <label style="font-size:12px;color:#a0d4ff;">Количество:</label>
           <input id="q-${id}" class="qty-input" type="number" value="1" min="1">
-          <button class="btn" onclick="addToCart('${i.name}',${i.price},document.getElementById('q-${id}').value)">
-            ✓ В заказ
-          </button>
+          <button class="btn" onclick="handleAddToCart('${i.name.replace(/'/g,'\\\'')}',${i.price},'q-${id}')">✓ В заказ</button>
         </div>`;
     });
   }
-
   initScrollSpy();
-})
-.catch(e => {
-  console.error('Ошибка загрузки:', e);
-  document.getElementById("catalog").innerHTML = `
-    <div style="grid-column:1/-1;padding:40px;text-align:center;color:#ff6b6b;">
-      <p>❌ Ошибка подключения к базе данных</p>
-      <p style="font-size:12px;color:#a0d4ff;">Проверьте SCRIPT_URL в коде</p>
-    </div>`;
+}).catch(e => {
+  document.getElementById("catalog").innerHTML = `<div style="grid-column:1/-1;padding:40px;text-align:center;color:#ff6b6b;"><p>❌ Ошибка загрузки</p></div>`;
 });
 
-document.addEventListener("click", e => {
-  const link = e.target.closest("[data-target]");
-  if(!link) return;
-  e.preventDefault();
-  document.getElementById(link.dataset.target)
-    .scrollIntoView({behavior: "smooth", block: "start"});
-});
-
-function initScrollSpy() {
-  const sections = [...document.querySelectorAll(".category-title")];
-  const links = [...document.querySelectorAll(".category-menu a")];
-
-  window.addEventListener("scroll", () => {
-    let current = null;
-    sections.forEach(s => {
-      if(s.getBoundingClientRect().top <= 120) current = s;
-    });
-    if(!current) return;
-    links.forEach(l => l.classList.remove("active"));
-    const a = links.find(l => l.dataset.target === current.id);
-    if(a) a.classList.add("active");
-  });
-
-  window.dispatchEvent(new Event("scroll"));
+function handleAddToCart(name, price, inputId) {
+  const qty = parseInt(document.getElementById(inputId).value) || 1;
+  addToCart(name, price, qty);
 }
 
 function addToCart(name, price, qty) {
-  qty = +qty || 1;
+  qty = parseInt(qty) || 1;
+  price = parseFloat(price) || 0;
   const f = cart.find(i => i.name === name);
   if(f) {
     f.qty += qty;
-    f.total += qty * price;
+    f.total = f.qty * price;
   } else {
     cart.push({name, qty, total: qty * price});
   }
   renderCart();
-}
-
-function removeFromCart(i) {
-  cart.splice(i, 1);
-  renderCart();
-}
-
-function renderCart() {
-  const box = document.getElementById("cart");
-  const total = document.getElementById("total");
-  box.innerHTML = "";
-  let sum = 0;
-  
-  if(cart.length === 0) {
-    box.innerHTML = '<p style="color:#8eb8ff;font-size:13px;">Заказ пуст</p>';
-  }
-  
-  cart.forEach((i, idx) => {
-    sum += i.total;
-    box.innerHTML += `
-      <div class="cart-item">
-        <span>${i.name} ×${i.qty} = $${i.total}</span>
-        <button class="btn btn-del" onclick="removeFromCart(${idx})">✕</button>
-      </div>`;
-  });
-  total.textContent = sum;
-}
-
-function sendOrder() {
-  if(!cart.length) {
-    alert("⚠️ Заказ пуст. Добавьте товары.");
-    return;
-  }
-
-  const name = document.getElementById("customerName").value.trim();
-  const phone = document.getElementById("customerPhone").value.trim();
-  
-  if(!name || !phone) {
-    alert("⚠️ Заполните ФИО и телефон");
-    return;
-  }
-
-  const email = document.getElementById("customerEmail").value.trim();
-
-  const p = new URLSearchParams();
-  p.append("data", JSON.stringify({
-    name,
-    phone,
-    email,
-    items: cart,
-    timestamp: new Date().toISOString()
-  }));
-
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {"Content-Type": "application/x-www-form-urlencoded"},
-    body: p.toString()
-  });
-
-  alert("✅ Заказ успешно отправлен на рассмотрение");
-  cart = [];
-  renderCart();
-  document.getElementById("customerName").value = "";
-  document.getElementById("customerPhone").value = "";
-  document.getElementById("customerEmail").value = "";
 }
 </script>
 
