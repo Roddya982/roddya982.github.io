@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Government Los-Santos Orders</title>
+<link rel="icon" type="image/png" href="favicon.png">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:'Arial Nova', Arial, sans-serif;
+  background:
+    linear-gradient(135deg,rgba(15,35,70,.9),rgba(5,15,40,.9)),
+    url("https://i.imgur.com/3qsJXDT.jpeg");
+  background-size:cover;
+  background-attachment:fixed;
+  min-height:100vh;
+  padding:24px;
+  color:#e0e0e0;
+}
+
+h1{
+  text-align:center;
+  margin-bottom:12px;
+  font-size:36px;
+  color:#ffffff;
+  text-shadow:0 0 20px rgba(100,180,255,.5);
+  letter-spacing:2px;
+}
+
+.subtitle{
+  text-align:center;
+  margin-bottom:32px;
+  color:#a0c0ff;
+  font-size:14px;
+  letter-spacing:1px;
+}
+
+/* ===== ЛЕЙАУТ ===== */
+.main-layout{
+  max-width:1400px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1fr 360px;
+  gap:24px;
+  align-items:start;
+}
+
+/* ===== STICKY SIDEBAR ===== */
+aside{
+  position:sticky;
+  top:24px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* ===== КАТАЛОГ ===== */
+.catalog{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:24px;
+}
+
+.category-title{
+  grid-column:1/-1;
+  font-size:28px;
+  font-weight:700;
+  margin:36px 0 16px;
+  padding-bottom:12px;
+  border-bottom:2px solid rgba(100,180,255,.4);
+  color:#a0d4ff;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+/* ===== КАРТОЧКА ===== */
+.card{
+  background:linear-gradient(135deg,rgba(20,50,100,.4),rgba(10,30,70,.4));
+  border:1px solid rgba(100,180,255,.3);
+  border-radius:14px;
+  padding:18px;
+  transition:all .3s ease;
+}
+
+.card:hover{
+  background:linear-gradient(135deg,rgba(30,70,130,.5),rgba(15,40,90,.5));
+  border-color:rgba(100,180,255,.6);
+  box-shadow:0 0 20px rgba(100,180,255,.2);
+}
+
+.card img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid rgba(100,180,255,.2);
+}
+
+.card h3{
+  margin:12px 0 8px;
+  color:#ffffff;
+  font-size:16px;
+}
+
+.card p{
+  margin:0 0 12px;
+  color:#b0d0ff;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.price{
+  font-size:22px;
+  font-weight:700;
+  margin:12px 0 8px;
+  color:#5dd4ff;
+  text-shadow:0 0 10px rgba(93,212,255,.5);
+}
+
+/* ===== ИНПУТЫ ===== */
+.qty-input{
+  width:100%;
+  max-width:90px;
+  padding:8px;
+  margin-top:8px;
+  text-align:center;
+  border-radius:8px;
+  border:1px solid rgba(100,180,255,.3);
+  background:rgba(0,20,50,.6);
+  color:#a0d4ff;
+  outline:none;
+  font-size:15px;
+  font-weight:600;
+}
+
+.qty-input:focus{
+  border-color:rgba(100,180,255,.7);
+  box-shadow:0 0 10px rgba(100,180,255,.3);
+}
+
+.text-input{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border-radius:10px;
+  border:1px solid rgba(100,180,255,.3);
+  background:rgba(0,20,50,.6);
+  color:#ffffff;
+  outline:none;
+  font-size:14px;
+}
+
+.text-input:focus{
+  border-color:rgba(100,180,255,.7);
+  box-shadow:0 0 10px rgba(100,180,255,.3);
+}
+
+input::placeholder{color:rgba(160,192,255,.5)}
+
+/* ===== КНОПКИ ===== */
+.btn{
+  margin-top:10px;
+  padding:10px;
+  background:linear-gradient(135deg,rgba(50,100,200,.8),rgba(30,70,160,.8));
+  color:#ffffff;
+  border:1px solid rgba(100,180,255,.5);
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+  transition:all .3s ease;
+  text-transform:uppercase;
+  font-size:13px;
+  letter-spacing:.5px;
+}
+
+.btn:hover{
+  background:linear-gradient(135deg,rgba(70,130,230,.9),rgba(50,90,190,.9));
+  border-color:rgba(100,180,255,.8);
+  box-shadow:0 0 15px rgba(100,180,255,.4);
+}
+
+.btn:active{
+  transform:scale(.97);
+}
+
+.btn-del{
+  background:rgba(220,50,50,.6);
+  border:1px solid rgba(220,100,100,.4);
+  padding:4px 8px;
+  margin:0;
+}
+
+.btn-del:hover{
+  background:rgba(240,70,70,.8);
+  border-color:rgba(240,100,100,.6);
+  box-shadow:0 0 10px rgba(240,70,70,.3);
+}
+
+/* ===== BOX ===== */
+.info-box{
+  background:linear-gradient(135deg,rgba(20,50,100,.5),rgba(10,30,70,.5));
+  border:1px solid rgba(100,180,255,.3);
+  border-radius:14px;
+  padding:18px;
+}
+
+.info-box h2{
+  color:#a0d4ff;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  font-size:14px;
+  margin-bottom:12px;
+}
+
+.info-box p{
+  margin:8px 0;
+  color:#e0e0e0;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.info-box strong{
+  color:#5dd4ff;
+}
+
+/* ===== COLLAPSIBLE ===== */
+details summary{
+  cursor:pointer;
+  list-style:none;
+  user-select:none;
+}
+
+details summary::-webkit-details-marker{display:none}
+
+details summary h2{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:0;
+  padding:0;
+}
+
+details summary h2::after{
+  content:"▾";
+  font-size:16px;
+  transition:.25s;
+  color:#a0d4ff;
+}
+
+details:not([open]) summary h2::after{
+  transform:rotate(-90deg);
+}
+
+details[open] .info-box{
+  border-color:rgba(100,180,255,.5);
+}
+
+/* ===== МЕНЮ КАТЕГОРИЙ ===== */
+.category-menu{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:12px;
+}
+
+.category-menu a{
+  color:#a0d4ff;
+  text-decoration:none;
+  padding:8px 12px;
+  border-radius:8px;
+  background:rgba(30,60,120,.4);
+  font-size:13px;
+  border-left:3px solid transparent;
+  transition:all .2s ease;
+}
+
+.category-menu a:hover{
+  background:rgba(40,80,150,.5);
+  color:#ffffff;
+}
+
+.category-menu a.active{
+  background:linear-gradient(90deg,rgba(93,212,255,.3),rgba(50,100,200,.2));
+  color:#5dd4ff;
+  border-left-color:#5dd4ff;
+  font-weight:700;
+}
+
+/* ===== КОРЗИНА ===== */
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px;
+  background:rgba(0,20,50,.4);
+  border-radius:8px;
+  margin-bottom:8px;
+  border-left:3px solid rgba(93,212,255,.5);
+  font-size:13px;
+}
+
+.cart-item span{
+  color:#a0d4ff;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:900px){
+  .main-layout{grid-template-columns:1fr}
+  aside{position:static}
+  h1{font-size:28px}
+  .category-title{font-size:22px}
+}
+</style>
+</head>
+
+<body>
+
+<h1>⚖️ GOVERNMENT ORDERS</h1>
+<div class="subtitle">Правительственные заказы Лос-Сантоса</div>
+
+<div class="main-layout">
+
+  <div id="catalog" class="catalog"></div>
+
+  <aside>
+
+    <!-- КАТЕГОРИИ ЗАКАЗОВ -->
+    <details open class="info-box">
+      <summary><h2>📂 Категории</h2></summary>
+      <nav id="categoryMenu" class="category-menu"></nav>
+    </details>
+
+    <!-- КОРЗИНА ЗАКАЗОВ -->
+    <div class="info-box">
+      <h2>🛒 Заказ</h2>
+      <div id="cart"></div>
+      <p style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(100,180,255,.2);">
+        <strong>Общая сумма:</strong><br>
+        <span style="font-size:20px;color:#5dd4ff;">$<span id="total">0</span></span>
+      </p>
+
+      <input id="customerName" class="text-input" placeholder="ФИО исполнителя">
+      <input id="customerPhone" class="text-input" placeholder="Контактный номер">
+      <input id="customerEmail" class="text-input" placeholder="Email (опционально)">
+
+      <button class="btn" onclick="sendOrder()" style="width:100%;margin-top:16px;">
+        📨 Отправить заказ
+      </button>
+    </div>
+
+  </aside>
+
+</div>
+
+<script>
+// 🔒 ЗАЩИТА СКРИПТА 4-Й СПОСОБ
+// URL закодирован в BASE64 + Блокирование DevTools
+// Google Apps Script URL вашего проекта с полной защитой
+
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDNtPobAOLjo-8-PYQbbFBNGdqm-aZiGA_7wr-5J-ocjxrE5_7gNn7tD2noSK5U1BtXQ/exec';
+let cart = [];
+
+// ===== БЛОКИРОВАНИЕ DevTools (F12, Ctrl+Shift+I, Ctrl+Shift+C) =====
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.shiftKey && e.key === 'C')) {
+    e.preventDefault();
+  }
+});
+
+// ===== ОБНАРУЖЕНИЕ ОТКРЫТОГО DevTools =====
+let devtoolsOpen = false;
+setInterval(() => {
+  const start = new Date().getTime();
+  debugger;
+  const elapsed = new Date().getTime() - start;
+  if(elapsed > 50) {
+    devtoolsOpen = true;
+  }
+}, 500);
+
+/* ===== ЗАГРУЗКА КАТАЛОГА + МЕНЮ ===== */
+fetch(SCRIPT_URL)
+.then(r => r.json())
+.then(items => {
+  const catalog = document.getElementById("catalog");
+  const menu = document.getElementById("categoryMenu");
+  const groups = {};
+
+  // Группируем товары по категориям
+  items.forEach(i => {
+    const c = i.category || "Прочие заказы";
+    (groups[c] = groups[c] || []).push(i);
+  });
+
+  // Выводим каждую категорию
+  for(const c in groups) {
+    const anchor = c.replace(/\s+/g, "_");
+
+    // Заголовок категории
+    catalog.innerHTML += `<div class="category-title" id="cat-${anchor}">📋 ${c}</div>`;
+
+    // Ссылка в меню
+    menu.innerHTML += `<a href="#" data-target="cat-${anchor}">${c}</a>`;
+
+    // Карточки товаров
+    groups[c].forEach(i => {
+      const id = i.name.replace(/\s+/g, "_");
+      catalog.innerHTML += `
+        <div class="card">
+          <img src="${i.image}" alt="${i.name}">
+          <h3>${i.name}</h3>
+          <p>${i.description || "Государственный заказ"}</p>
+          <div class="price">${i.price} ${i.currency}</div>
+          <label style="font-size:12px;color:#a0d4ff;">Количество:</label>
+          <input id="q-${id}" class="qty-input" type="number" value="1" min="1">
+          <button class="btn" onclick="addToCart('${i.name}',${i.price},document.getElementById('q-${id}').value)">
+            ✓ В заказ
+          </button>
+        </div>`;
+    });
+  }
+
+  initScrollSpy();
+})
+.catch(e => {
+  console.error('Ошибка загрузки:', e);
+  document.getElementById("catalog").innerHTML = `
+    <div style="grid-column:1/-1;padding:40px;text-align:center;color:#ff6b6b;">
+      <p>❌ Ошибка подключения к базе данных</p>
+      <p style="font-size:12px;color:#a0d4ff;">Проверьте SCRIPT_URL в коде</p>
+    </div>`;
+});
+
+/* ===== ПЛАВНЫЙ СКРОЛЛ К КАТЕГОРИЯМ ===== */
+document.addEventListener("click", e => {
+  const link = e.target.closest("[data-target]");
+  if(!link) return;
+  e.preventDefault();
+  document.getElementById(link.dataset.target)
+    .scrollIntoView({behavior: "smooth", block: "start"});
+});
+
+/* ===== ПОДСВЕТКА АКТИВНОЙ КАТЕГОРИИ ===== */
+function initScrollSpy() {
+  const sections = [...document.querySelectorAll(".category-title")];
+  const links = [...document.querySelectorAll(".category-menu a")];
+
+  window.addEventListener("scroll", () => {
+    let current = null;
+    sections.forEach(s => {
+      if(s.getBoundingClientRect().top <= 120) current = s;
+    });
+    if(!current) return;
+    links.forEach(l => l.classList.remove("active"));
+    const a = links.find(l => l.dataset.target === current.id);
+    if(a) a.classList.add("active");
+  });
+
+  window.dispatchEvent(new Event("scroll"));
+}
+
+/* ===== УПРАВЛЕНИЕ КОРЗИНОЙ ===== */
+function addToCart(name, price, qty) {
+  qty = +qty || 1;
+  const f = cart.find(i => i.name === name);
+  if(f) {
+    f.qty += qty;
+    f.total += qty * price;
+  } else {
+    cart.push({name, qty, total: qty * price});
+  }
+  renderCart();
+}
+
+function removeFromCart(i) {
+  cart.splice(i, 1);
+  renderCart();
+}
+
+function renderCart() {
+  const box = document.getElementById("cart");
+  const total = document.getElementById("total");
+  box.innerHTML = "";
+  let sum = 0;
+  
+  if(cart.length === 0) {
+    box.innerHTML = '<p style="color:#8eb8ff;font-size:13px;">Заказ пуст</p>';
+  }
+  
+  cart.forEach((i, idx) => {
+    sum += i.total;
+    box.innerHTML += `
+      <div class="cart-item">
+        <span>${i.name} ×${i.qty} = $${i.total}</span>
+        <button class="btn btn-del" onclick="removeFromCart(${idx})">✕</button>
+      </div>`;
+  });
+  total.textContent = sum;
+}
+
+/* ===== ОТПРАВКА ЗАКАЗА ===== */
+function sendOrder() {
+  if(!cart.length) {
+    alert("⚠️ Заказ пуст. Добавьте товары.");
+    return;
+  }
+
+  const name = document.getElementById("customerName").value.trim();
+  const phone = document.getElementById("customerPhone").value.trim();
+  
+  if(!name || !phone) {
+    alert("⚠️ Заполните ФИО и телефон");
+    return;
+  }
+
+  const email = document.getElementById("customerEmail").value.trim();
+
+  const p = new URLSearchParams();
+  p.append("data", JSON.stringify({
+    name,
+    phone,
+    email,
+    items: cart,
+    timestamp: new Date().toISOString()
+  }));
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body: p.toString()
+  });
+
+  alert("✅ Заказ успешно отправлен на рассмотрение");
+  cart = [];
+  renderCart();
+  document.getElementById("customerName").value = "";
+  document.getElementById("customerPhone").value = "";
+  document.getElementById("customerEmail").value = "";
+}
+</script>
+
+</body>
+</html>
