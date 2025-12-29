@@ -355,28 +355,28 @@ fetch(SCRIPT_URL)
     (groups[c] = groups[c] || []).push(i);
   });
 
-  // for(const c in groups) {
-  //   const anchor = c.replace(/\s+/g, "_");
-  //   catalog.innerHTML += `<div class="category-title" id="cat-${anchor}">📋 ${c}</div>`;
-  //   menu.innerHTML += `<a href="#" data-target="cat-${anchor}">${c}</a>`;
+  for(const c in groups) {
+    const anchor = c.replace(/\s+/g, "_");
+    catalog.innerHTML += `<div class="category-title" id="cat-${anchor}">📋 ${c}</div>`;
+    menu.innerHTML += `<a href="#" data-target="cat-${anchor}">${c}</a>`;
 
-  //   groups[c].forEach(i => {
-  //     const id = i.name.replace(/\s+/g, "_");
-  //     const price = parseFloat(i.price) || 0;
-  //     catalog.innerHTML += `
-  //       <div class="card">
-  //         <img src="${i.image}" alt="${i.name}">
-  //         <h3>${i.name}</h3>
-  //         <p>${i.description || "Государственный заказ"}</p>
-  //         <div class="price">${price} ${i.currency}</div>
-  //         <label style="font-size:12px;color:#a0d4ff;">Количество:</label>
-  //         <input id="q-${id}" class="qty-input" type="number" value="1" min="1">
-  //         <button class="btn" onclick="handleAddToCart('${i.name.replace(/'/g,"\\'")}',${price},'q-${id}')">
-  //           ✓ В заказ
-  //         </button>
-  //       </div>`;
-  //   });
-  // }
+    groups[c].forEach(i => {
+      const id = i.name.replace(/\s+/g, "_");
+      const price = parseFloat(i.price) || 0;
+      catalog.innerHTML += `
+        <div class="card">
+          <img src="${i.image}" alt="${i.name}">
+          <h3>${i.name}</h3>
+          <p>${i.description || "Государственный заказ"}</p>
+          <div class="price">${price} ${i.currency}</div>
+          <label style="font-size:12px;color:#a0d4ff;">Количество:</label>
+          <input id="q-${id}" class="qty-input" type="number" value="1" min="1">
+          <button class="btn" onclick="handleAddToCart('${i.name.replace(/'/g,"\\'")}',${price},'q-${id}')">
+            ✓ В заказ
+          </button>
+        </div>`;
+    });
+  }
 
   initScrollSpy();
 })
