@@ -321,24 +321,6 @@ details[open] .info-box{
       <summary><h2>📂 Категории</h2></summary>
       <nav id="categoryMenu" class="category-menu"></nav>
     </details>
-
-    <!-- <div class="info-box">
-      <h2>🛒 Заказ</h2>
-      <div id="cart"></div>
-      <p style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(100,180,255,.2);">
-        <strong>Общая сумма:</strong><br>
-        <span style="font-size:20px;color:#5dd4ff;">$<span id="total">0</span></span>
-      </p>
-
-      <input id="customerName" class="text-input" placeholder="ФИО исполнителя">
-      <input id="customerPhone" class="text-input" placeholder="Контактный номер">
-      <input id="customerEmail" class="text-input" placeholder="Email (опционально)">
-
-      <button class="btn" onclick="sendOrder()" style="width:100%;margin-top:16px;">
-        📨 Отправить заказ
-      </button>
-    </div> -->
-
   </aside>
 
 </div>
@@ -373,28 +355,28 @@ fetch(SCRIPT_URL)
     (groups[c] = groups[c] || []).push(i);
   });
 
-  for(const c in groups) {
-    const anchor = c.replace(/\s+/g, "_");
-    catalog.innerHTML += `<div class="category-title" id="cat-${anchor}">📋 ${c}</div>`;
-    menu.innerHTML += `<a href="#" data-target="cat-${anchor}">${c}</a>`;
+  // for(const c in groups) {
+  //   const anchor = c.replace(/\s+/g, "_");
+  //   catalog.innerHTML += `<div class="category-title" id="cat-${anchor}">📋 ${c}</div>`;
+  //   menu.innerHTML += `<a href="#" data-target="cat-${anchor}">${c}</a>`;
 
-    groups[c].forEach(i => {
-      const id = i.name.replace(/\s+/g, "_");
-      const price = parseFloat(i.price) || 0;
-      catalog.innerHTML += `
-        <div class="card">
-          <img src="${i.image}" alt="${i.name}">
-          <h3>${i.name}</h3>
-          <p>${i.description || "Государственный заказ"}</p>
-          <div class="price">${price} ${i.currency}</div>
-          <label style="font-size:12px;color:#a0d4ff;">Количество:</label>
-          <input id="q-${id}" class="qty-input" type="number" value="1" min="1">
-          <button class="btn" onclick="handleAddToCart('${i.name.replace(/'/g,"\\'")}',${price},'q-${id}')">
-            ✓ В заказ
-          </button>
-        </div>`;
-    });
-  }
+  //   groups[c].forEach(i => {
+  //     const id = i.name.replace(/\s+/g, "_");
+  //     const price = parseFloat(i.price) || 0;
+  //     catalog.innerHTML += `
+  //       <div class="card">
+  //         <img src="${i.image}" alt="${i.name}">
+  //         <h3>${i.name}</h3>
+  //         <p>${i.description || "Государственный заказ"}</p>
+  //         <div class="price">${price} ${i.currency}</div>
+  //         <label style="font-size:12px;color:#a0d4ff;">Количество:</label>
+  //         <input id="q-${id}" class="qty-input" type="number" value="1" min="1">
+  //         <button class="btn" onclick="handleAddToCart('${i.name.replace(/'/g,"\\'")}',${price},'q-${id}')">
+  //           ✓ В заказ
+  //         </button>
+  //       </div>`;
+  //   });
+  // }
 
   initScrollSpy();
 })
