@@ -344,7 +344,7 @@ details[open] .info-box{
 </div>
 
 <script>
-const SCRIPT_URL = atob('aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J5RFppbm0weTRSUTVaRnVMNXRIcFN0Q19WalNaY1ZYQ1Y5SUpZdHdHbVlJeVRFczhnR1E1QlJjS1B1RFNUeHFnbFAtdy9leGVj');
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDZinm0y4RQ5ZFuL5tHpStC_VjSZcVXCV9IJYtwGmYIyTEs8gGQ5BRcKPuDSTxqglP-w/exec';
 let cart = [];
 
 document.addEventListener('keydown', (e) => {
@@ -403,7 +403,7 @@ fetch(SCRIPT_URL)
     <div style="grid-column:1/-1;padding:40px;text-align:center;color:#ff6b6b;">
       <p>❌ Ошибка подключения к базе данных</p>
       <p style="font-size:12px;color:#a0d4ff;margin-top:10px;">Проверьте:</p>
-      <p style="font-size:11px;color:#8eb8ff;">✓ Разверните новый Google Apps Script<br>✓ Получите новый URL и обновите HTML<br>✓ Убедитесь, что лист называется "Товары"</p>
+      <p style="font-size:11px;color:#8eb8ff;">✓ Лист Google Sheet назван "Товары"<br>✓ Первая строка: name, category, image, price, currency, description<br>✓ Google Apps Script развёрнут как Web app</p>
     </div>`;
 });
 
