@@ -344,7 +344,7 @@ details[open] .info-box{
 </div>
 
 <script>
-const SCRIPT_URL = atob('aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9Ba0Z5Y2J3RE50UG9iQU9Mam8tOC1QWVFiYkZCTkdkcW0tYVppR0FfN3dyLTVKLW9janhyRTVfN2dObjd0RDJub1NLNVUxQnRYUS9leGVj');
+const SCRIPT_URL = atob('aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J5RFppbm0weTRSUTVaRnVMNXRIcFN0Q19WalNaY1ZYQ1Y5SUpZdHdHbVlJeVRFczhnR1E1QlJjS1B1RFNUeHFnbFAtdy9leGVj');
 let cart = [];
 
 document.addEventListener('keydown', (e) => {
@@ -398,9 +398,12 @@ fetch(SCRIPT_URL)
   initScrollSpy();
 })
 .catch(e => {
+  console.error('Ошибка:', e);
   document.getElementById("catalog").innerHTML = `
     <div style="grid-column:1/-1;padding:40px;text-align:center;color:#ff6b6b;">
       <p>❌ Ошибка подключения к базе данных</p>
+      <p style="font-size:12px;color:#a0d4ff;margin-top:10px;">Проверьте:</p>
+      <p style="font-size:11px;color:#8eb8ff;">✓ Разверните новый Google Apps Script<br>✓ Получите новый URL и обновите HTML<br>✓ Убедитесь, что лист называется "Товары"</p>
     </div>`;
 });
 
